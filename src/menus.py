@@ -1,12 +1,13 @@
 def write_welcome() -> None:
     print("         VEHICLE DATA ANALYZER")
 
-
 def context_menu() -> str:
     print("\nCONTEXT")
     print("1 - Dataset Information")
-    print("2 - Exit")
+    print("2 - Vehicle Assistance")
+    print("3 - Exit")
     return input("Choose an option: ").strip()
+
 
 
 def dataset_information_menu() -> str:

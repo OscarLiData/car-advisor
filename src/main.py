@@ -1,7 +1,6 @@
-from pathlib import Path
-
 from data_loader import load_dataset
 from explorer import show_graphics, show_variables
+from assistance import run_assistance
 from menus import (
     write_welcome,
     context_menu,
@@ -12,12 +11,10 @@ from exceptions import DatasetNotFoundError
 
 
 def run() -> None:
-    """Main function following the project logigram."""
-
     write_welcome()
+
     try:
         df = load_dataset("data/ademe-car-labelling.csv")
-
     except DatasetNotFoundError as error:
         print(error)
         return
@@ -25,11 +22,11 @@ def run() -> None:
     while True:
         context_choice = context_menu()
 
-        if context_choice == "1":  # Dataset Information
+        if context_choice == "1":
             while True:
                 dataset_choice = dataset_information_menu()
 
-                if dataset_choice == "1":  # Explore the Dataset
+                if dataset_choice == "1":
                     while True:
                         explore_choice = explore_dataset_menu()
 
@@ -52,6 +49,9 @@ def run() -> None:
                     print("Please choose a valid option.")
 
         elif context_choice == "2":
+            run_assistance(df)
+
+        elif context_choice == "3":
             break
 
         else:
@@ -62,3 +62,4 @@ def run() -> None:
 
 if __name__ == "__main__":
     run()
+
