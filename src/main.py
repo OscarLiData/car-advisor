@@ -1,3 +1,8 @@
+import sys
+
+if sys.version_info < (3, 12):
+    print("This project requires Python 3.12 or higher.")
+    sys.exit()
 from data_loader import load_dataset
 from explorer import show_graphics, show_variables
 from assistance import run_assistance
