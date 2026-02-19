@@ -59,7 +59,7 @@ def run() -> None:
         elif context_choice == "3":
             break
 
-        else:
+        else:   
             print("Please choose a valid option.")
 
     print("\nThank you for using the program.")
