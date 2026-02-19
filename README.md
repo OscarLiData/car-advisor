@@ -1,6 +1,6 @@
 # Smart Vehicle Decision Analytics
 
-![Python](https://img.shields.io/badge/python-3.14+-3776AB?logo=python\&logoColor=white)
+![Python](https://img.shields.io/badge/python-3.10+-3776AB?logo=python\&logoColor=white)
 
 ---
 
