@@ -49,6 +49,8 @@ This tool is designed for private consumers seeking clear, structured informatio
 
 The dataset is provided by **ADEME (French Agency for Ecological Transition)**, a public organization actively engaged in combating climate change.
 
+This dataset is released under an open-source licence.
+
 [https://data.ademe.fr/datasets/ademe-car-labelling](https://data.ademe.fr/datasets/ademe-car-labelling)
 
 The dataset contains over 60 variables describing new passenger vehicles under the WLTP standard.
@@ -106,8 +108,6 @@ This setup includes:
 * A `docker-compose.yml` file to orchestrate and run multiple containers simultaneously
 
 This guarantees consistency across development setups and simplifies onboarding.
-
-
 
 
 
