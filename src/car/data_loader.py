@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 
-from src.exceptions import DatasetNotFoundError
+from car.exceptions import DatasetNotFoundError
 
 
 def load_dataset(path: str | Path) -> pd.DataFrame:
