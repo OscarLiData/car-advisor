@@ -1,25 +1,35 @@
+import os
 import sys
 
-if sys.version_info < (3, 12):
-    print("This project requires Python 3.12 or higher.")
+if sys.version_info < (3, 14):
+    print("This project requires Python 3.14 or higher.")
     sys.exit()
-from data_loader import load_dataset
-from explorer import show_graphics, show_variables
-from assistance import run_assistance
-from menus import (
+
+from src.data_cleaner import clean_dataset
+from src.data_loader import load_dataset
+from src.explorer import show_graphics, show_variables
+from src.assistance import run_assistance
+from src.menus import (
     write_welcome,
     context_menu,
     dataset_information_menu,
     explore_dataset_menu
 )
-from exceptions import DatasetNotFoundError
+from src.exceptions import DatasetNotFoundError
+
+DATA_PATH = "data/processed/cars_clean.csv"
 
 
 def run() -> None:
     write_welcome()
 
+    # Run cleaner only if dataset does not exist
+    if not os.path.exists(DATA_PATH):
+        print("Clean dataset not found. Running data cleaner...")
+        clean_dataset()
+
     try:
-        df = load_dataset("data/ademe-car-labelling.csv")
+        df = load_dataset(DATA_PATH)
     except DatasetNotFoundError as error:
         print(error)
         return
@@ -59,7 +69,7 @@ def run() -> None:
         elif context_choice == "3":
             break
 
-        else:   
+        else:
             print("Please choose a valid option.")
 
     print("\nThank you for using the program.")
@@ -67,4 +77,3 @@ def run() -> None:
 
 if __name__ == "__main__":
     run()
-
