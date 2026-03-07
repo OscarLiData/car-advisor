@@ -1,7 +1,7 @@
 import sys
 
-if sys.version_info < (3, 12):
-    print("This project requires Python 3.12 or higher.")
+if sys.version_info < (3, 14):
+    print("This project requires Python 3.14 or higher.")
     sys.exit()
 from data_loader import load_dataset
 from explorer import show_graphics, show_variables
@@ -19,7 +19,7 @@ def run() -> None:
     write_welcome()
 
     try:
-        df = load_dataset("data/ademe-car-labelling.csv")
+        df = load_dataset("data/processed/ademe-car-labelling-v2.csv")
     except DatasetNotFoundError as error:
         print(error)
         return
