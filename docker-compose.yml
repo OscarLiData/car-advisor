@@ -6,3 +6,5 @@ services:
     container_name: projet_mdpd
     stdin_open: true
     tty: true
+    environment:
+      - PYTHONUNBUFFERED=1

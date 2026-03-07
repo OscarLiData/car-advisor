@@ -2,7 +2,6 @@ FROM python:3.14-slim
 
 WORKDIR /app
 
-# installer compilateur et dépendances système
 RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
@@ -13,8 +12,9 @@ RUN pip install poetry
 
 COPY pyproject.toml poetry.lock ./
 
-RUN poetry install --no-root
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-root --no-interaction --no-ansi
 
 COPY . .
 
-CMD ["poetry", "run", "python", "src/__main__.py"]
+CMD ["python", "-u", "src/__main__.py"]
