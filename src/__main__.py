@@ -19,7 +19,7 @@ def run() -> None:
     write_welcome()
 
     try:
-        df = load_dataset("data/processed/ademe-car-labelling-v2.csv")
+        df = load_dataset("data/processed/ademe-car-labelling-v2-utf8.csv")
     except DatasetNotFoundError as error:
         print(error)
         return
