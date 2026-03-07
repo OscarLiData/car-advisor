@@ -5,17 +5,17 @@ if sys.version_info < (3, 14):
     print("This project requires Python 3.14 or higher.")
     sys.exit()
 
-from src.data_cleaner import clean_dataset
-from src.data_loader import load_dataset
-from src.explorer import show_graphics, show_variables
-from src.assistance import run_assistance
-from src.menus import (
+from car.data_cleaner import clean_dataset
+from car.data_loader import load_dataset
+from car.explorer import show_graphics, show_variables
+from car.assistance import run_assistance
+from car.menus import (
     write_welcome,
     context_menu,
     dataset_information_menu,
     explore_dataset_menu
 )
-from src.exceptions import DatasetNotFoundError
+from car.exceptions import DatasetNotFoundError
 
 DATA_PATH = "data/processed/cars_clean.csv"
 
