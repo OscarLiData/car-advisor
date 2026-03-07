@@ -9,10 +9,6 @@ __pycache__/
 
 .DS_Store
 
-# Data générée
-data/processed/
-
-
 *.log
 
 
