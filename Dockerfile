@@ -1,6 +1,13 @@
-nano DockerfileFROM python:3.14-slim
+FROM python:3.14-slim
 
 WORKDIR /app
+
+# installer compilateur et dépendances système
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN pip install poetry
 
