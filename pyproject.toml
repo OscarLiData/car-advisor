@@ -4,6 +4,10 @@ version = "0.1.0"
 description = ""
 authors = [
     {name = "Oscar"}
+    {name = "Thibaut"}
+    {name = "Mattéo"}
+    {name = "Valentin"}
+    {name = "Estelle"}
 ]
 readme = "README.md"
 requires-python = ">=3.14"
