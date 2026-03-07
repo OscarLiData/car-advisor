@@ -1,11 +1,13 @@
-FROM python:3.12-slim
+nano DockerfileFROM python:3.14-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+RUN pip install poetry
 
-RUN pip install --no-cache-dir -r requirements.txt
+COPY pyproject.toml poetry.lock ./
+
+RUN poetry install --no-root
 
 COPY . .
 
-CMD ["python", "src/__main__.py"]
+CMD ["poetry", "run", "python", "src/__main__.py"]
