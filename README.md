@@ -4,7 +4,7 @@
 
 ---
 
-## Context
+## Context 
 
 ### Climate Challenge
 
