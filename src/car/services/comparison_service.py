@@ -1,7 +1,7 @@
 """Car comparison tool using a CSV dataset.
 
 User can:
-- list all vehicles
+- list brands with number of models
 - compare a single brand
 - compare two brands
 
@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import csv
 import difflib
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from statistics import mean
@@ -116,9 +117,9 @@ def fuzzy_choose_brand(brands: list[str], label: str) -> str:
 def ask_main_menu_choice() -> str:
     """Ask the user for the main menu choice."""
     print("\n===== Main menu =====")
-    print("1 - List all vehicles")
-    print("2 - Compare one brand")
-    print("3 - Compare two brands")
+    print("1 - Would you like to see the list of vehicle brands ?")
+    print("2 - Or view the statistics for a vehicle brand ?")
+    print("3 - Or compare two vehicle brands ?")
     print("0 - Quit")
 
     while True:
@@ -131,15 +132,14 @@ def ask_main_menu_choice() -> str:
 def ask_continue_choice() -> str:
     """Ask the user what to do after a comparison or listing."""
     print("\nWhat do you want to do next?")
-    print("1 - New comparison / listing")
-    print("2 - Back to main menu")
+    print("1 - Back to main menu")
     print("0 - Quit")
 
     while True:
         choice = input("Your choice: ").strip()
-        if choice in {"0", "1", "2"}:
+        if choice in {"0", "1"}:
             return choice
-        print("Invalid choice, please enter 0, 1 or 2.")
+        print("Invalid choice, please enter 0 or 1.")
 
 
 def filter_cars_by_brand(cars: list[Car], brand: str) -> list[Car]:
@@ -216,29 +216,21 @@ def display_two_results(
     print()
 
 
-def display_all_vehicles(cars: list[Car]) -> None:
-    """Display the full vehicle list."""
-    print("\n=== Vehicle list ===")
-    header = (
-        f"{'Brand':10} | {'Model':20} | {'Body':12} | "
-        f"{'Energy':10} | {'Price (€)':10} | {'CO2':6} | "
-        f"{'Fuel (L/100km)':14} | {'Power (kW)':11} | {'Weight (kg)':11}"
-    )
+def display_brand_list_with_counts(cars: list[Car]) -> None:
+    """Display each brand once with the number of distinct models."""
+    brand_to_models: dict[str, set[str]] = defaultdict(set)
+
+    for car in cars:
+        brand_to_models[car.brand].add(car.model)
+
+    print("\n=== Brand list (distinct models) ===")
+    header = f"{'Brand':20} | {'Number of models':16}"
     print(header)
     print("-" * len(header))
 
-    for car in cars:
-        print(
-            f"{car.brand:10} | "
-            f"{car.model:20} | "
-            f"{car.body_type:12} | "
-            f"{car.energy[:10]:10} | "
-            f"{car.price:10.0f} | "
-            f"{car.co2:6.1f} | "
-            f"{car.fuel_consumption:14.2f} | "
-            f"{car.power_kw:11.1f} | "
-            f"{car.weight_kg:11.0f}"
-        )
+    for brand in sorted(brand_to_models.keys()):
+        model_count = len(brand_to_models[brand])
+        print(f"{brand:20} | {model_count:16}")
 
     print("=" * len(header))
     print()
@@ -261,8 +253,8 @@ def main() -> None:
             return
 
         if menu_choice == "1":
-            # List all vehicles.
-            display_all_vehicles(cars)
+            # List brands with number of models.
+            display_brand_list_with_counts(cars)
 
         if menu_choice == "2":
             # Compare one brand.
@@ -305,12 +297,7 @@ def main() -> None:
             print("Goodbye!")
             return
         if next_choice == "1":
-            # Loop again but keep the same cars / brands in memory.
             continue
-        if next_choice == "2":
-            # Back to main menu: just continue, the loop will restart.
-            continue
-
 
 if __name__ == "__main__":
     main()
