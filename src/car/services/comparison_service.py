@@ -1,5 +1,4 @@
-"""Car comparison tool using a CSV dataset.
-
+"""
 User can:
 - list brands with number of models
 - compare a single brand
