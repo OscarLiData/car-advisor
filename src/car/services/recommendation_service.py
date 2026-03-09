@@ -26,7 +26,7 @@ DATA_FILE = Path("data/processed/cars_clean.csv")
 
 @dataclass
 class Car:
-   # Represent a single car entry
+    # Represent a single car entry.
 
     brand: str
     model: str
@@ -41,7 +41,7 @@ class Car:
 
 
 def load_cars(data_file: Path) -> list[Car]:
-    # Load cars from the CSV dataset
+    # Load cars from the CSV dataset.
     cars: list[Car] = []
 
     with data_file.open(encoding="utf-8") as csv_file:
@@ -85,8 +85,12 @@ def ask_budget() -> float:
 
 
 def ask_energy_type() -> str:
-    #Ask the user for an energy type (partial text, optional)
-    print("\nEnter one of the following energy types: (ELECTRIC, DIESEL, GASOLINE, ELECTRIC + GASOLINE HR, ELEC+DIESEL HR")
+    # Ask the user for an energy type (partial text, optional).
+    print(
+        "\nEnter one of the following energy types: "
+        "(ELECTRIC, DIESEL, GASOLINE, ELECTRIC + GASOLINE HR, "
+        "ELEC+DIESEL HR)"
+    )
     print("Press Enter or type 'any' to accept all energy types.")
 
     while True:
@@ -99,7 +103,11 @@ def ask_energy_type() -> str:
 def ask_body_type() -> str:
     # Ask the user for a body type (partial text, optional).
     print("\nEnter a body type (partial text is ok).")
-    print("Examples: 'SEDAN', 'OFF-ROAD', 'STATION WAGON', 'MPV', 'MINI MPV', 'MPV COMPACT', 'CABRIOLET', 'COUPE', 'CONVERTIBLE', 'LEISURE ACTIVITY VEHICLE', MINIBUS, ")
+    print(
+        "Examples: 'SEDAN', 'OFF-ROAD', 'STATION WAGON', 'MPV', "
+        "'MINI MPV', 'MPV COMPACT', 'CABRIOLET', 'COUPE', "
+        "'CONVERTIBLE', 'LEISURE ACTIVITY VEHICLE', 'MINIBUS'"
+    )
     print("Press Enter or type 'any' to accept all body types.")
 
     while True:
@@ -227,6 +235,21 @@ def display_found_cars(cars: list[Car]) -> None:
     print()
 
 
+def ask_new_search_choice() -> bool:
+    # Ask the user if they want to perform a new search.
+    print("\nWhat do you want to do next?")
+    print("1 - New search")
+    print("0 - Quit")
+
+    while True:
+        choice = input("Your choice: ").strip()
+        if choice == "1":
+            return True
+        if choice == "0":
+            return False
+        print("Invalid choice, please enter 1 or 0.")
+
+
 def main() -> None:
     # Main program entry point.
     if not DATA_FILE.exists():
@@ -237,20 +260,25 @@ def main() -> None:
 
     cars = load_cars(DATA_FILE)
 
-    budget = ask_budget()
-    energy = ask_energy_type()
-    body = ask_body_type()
-    priority = ask_priority_criterion()
+    while True:
+        budget = ask_budget()
+        energy = ask_energy_type()
+        body = ask_body_type()
+        priority = ask_priority_criterion()
 
-    filtered_cars = filter_cars(
-        cars=cars,
-        max_budget=budget,
-        energy_pattern=energy,
-        body_pattern=body,
-    )
+        filtered_cars = filter_cars(
+            cars=cars,
+            max_budget=budget,
+            energy_pattern=energy,
+            body_pattern=body,
+        )
 
-    best_cars = select_best_cars(filtered_cars, priority, top_n=5)
-    display_found_cars(best_cars)
+        best_cars = select_best_cars(filtered_cars, priority, top_n=5)
+        display_found_cars(best_cars)
+
+        if not ask_new_search_choice():
+            print("\nEnd of search. Goodbye!")
+            break
 
 
 if __name__ == "__main__":
