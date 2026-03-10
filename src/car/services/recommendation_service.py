@@ -1,18 +1,4 @@
-"""Find a car tool using a CSV dataset.
 
-User inputs:
-- maximum budget
-- energy type (text filter, optional)
-- body type (text filter, optional)
-- priority criterion:
-    - lowest price
-    - lowest fuel consumption
-    - lowest CO2 emissions
-    - highest engine power
-    - highest electric driving range
-
-The tool applies filters and displays the best matching vehicles.
-"""
 
 from __future__ import annotations
 
@@ -283,3 +269,84 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+=======
+import numpy as np
+from car.filters.budget_filter import filter_by_budget
+from car.filters.energy_filter import filter_by_energy
+from car.filters.body_filter import filter_by_body
+
+
+def recommend_vehicle(
+    df,
+    budget=None,
+    energy=None,
+    body=None,
+    w_price=0.4,
+    w_co2=0.3,
+    w_consumption=0.2,
+    w_power=0.1,
+):
+
+    filtered = df.copy()
+
+    if budget:
+        filtered = filter_by_budget(filtered, budget)
+
+    if energy:
+        filtered = filter_by_energy(filtered, energy)
+
+    if body:
+        filtered = filter_by_body(filtered, body)
+
+    if filtered.empty:
+        return filtered
+
+    # critères
+    criteria = filtered[
+        [
+            "vehicle_price_eur",
+            "co2_mixed_g_km",
+            "fuel_consumption_l_100km",
+            "max_power_kw",
+        ]
+    ].values
+
+    # normalisation
+    norm = criteria / np.sqrt((criteria**2).sum(axis=0))
+
+    # pondération
+    weights = np.array([w_price, w_co2, w_consumption, w_power])
+    weighted = norm * weights
+
+    # solution idéale et anti-idéale
+    ideal = np.array(
+        [
+            weighted[:, 0].min(),  # prix à minimiser
+            weighted[:, 1].min(),  # CO2 à minimiser
+            weighted[:, 2].min(),  # consommation à minimiser
+            weighted[:, 3].max(),  # puissance à maximiser
+        ]
+    )
+
+    anti_ideal = np.array(
+        [
+            weighted[:, 0].max(),
+            weighted[:, 1].max(),
+            weighted[:, 2].max(),
+            weighted[:, 3].min(),
+        ]
+    )
+
+    # distances
+    dist_ideal = np.sqrt(((weighted - ideal) ** 2).sum(axis=1))
+    dist_anti = np.sqrt(((weighted - anti_ideal) ** 2).sum(axis=1))
+
+    # score TOPSIS
+    score = dist_anti / (dist_ideal + dist_anti)
+
+    filtered["score"] = score
+
+    filtered = filtered.sort_values("score", ascending=False)
+
+    return filtered.head(10)
+>>>>>>> ac12e2b (update)

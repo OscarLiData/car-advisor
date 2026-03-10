@@ -1,20 +1,15 @@
-FROM python:3.14-slim
+FROM python:3.14
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    gcc \
-    g++ \
-    && rm -rf /var/lib/apt/lists/*
+COPY pyproject.toml poetry.lock /app/
 
 RUN pip install poetry
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-root
 
-COPY pyproject.toml poetry.lock ./
+COPY . /app
 
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-root --no-interaction --no-ansi
+ENV PYTHONPATH=/app/src
 
-COPY . .
-
-CMD ["python", "-u", "src/__main__.py"]
+CMD ["python", "-m", "car"]
