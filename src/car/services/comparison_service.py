@@ -161,7 +161,7 @@ def main() -> None:
     if not DATA_FILE.exists():
         raise FileNotFoundError(DATA_FILE)
 
-    vehicules = load_vehicules(DATA_FILE)
+    vehicules = load_cars(DATA_FILE)
     brands = get_available_brands(vehicules)
 
     while True:
@@ -180,7 +180,7 @@ def main() -> None:
             brand = fuzzy_choose_brand(brands, "brand")
 
             if brand:
-                brand_vehicules = filter_vehicules_by_brand(vehicules, brand)
+                brand_vehicules = filter_cars_by_brand(vehicules, brand)
 
                 print(f"{len(brand_vehicules)} vehicles found.")
 
@@ -191,8 +191,8 @@ def main() -> None:
 
             if brand1 and brand2:
 
-                vehicules1 = filter_vehicules_by_brand(vehicules, brand1)
-                vehicules2 = filter_vehicules_by_brand(vehicules, brand2)
+                vehicules1 = filter_cars_by_brand(vehicules, brand1)
+                vehicules2 = filter_cars_by_brand(vehicules, brand2)
 
                 print(f"{brand1}: {len(vehicules1)} vehicles")
                 print(f"{brand2}: {len(vehicules2)} vehicles")
