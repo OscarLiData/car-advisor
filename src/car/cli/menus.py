@@ -3,12 +3,15 @@ from car.services.recommendation_service import recommend_vehicle
 from car.services.visualization_service import radar_chart
 
 
-def select_option(options, label):
+def select_option(df, column, options, label):
 
     print(f"\nAvailable {label}:\n")
 
     for i, option in enumerate(options, start=1):
-        print(f"{i} - {option}")
+
+        count = len(df[df[column] == option])
+
+        print(f"{i} - {option} ({count} vehicles)")
 
     while True:
         try:
@@ -62,8 +65,9 @@ def main_menu(df):
             energy_options = sorted(df["energy"].unique())
             body_options = sorted(df["body_type"].unique())
 
-            energy = select_option(energy_options, "energy types")
-            body = select_option(body_options, "body types")
+            energy = select_option(df, "energy", energy_options, "energy types")
+
+            body = select_option(df, "body_type", body_options, "body types")
 
             print("\nImportance of criteria (0 → not important, 1 → very important)\n")
 
