@@ -3,13 +3,10 @@ from car.processing.cleaner import clean_dataset
 from car.cli.menus import main_menu
 
 
-def main():
-
+def main() -> None:
     df = load_dataset()
-
-    df = clean_dataset(df)
-
-    main_menu(df)
+    clean_dataset(df)
+    main_menu()
 
 
 if __name__ == "__main__":
