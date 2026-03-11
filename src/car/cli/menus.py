@@ -4,9 +4,6 @@ from car.services.visualization_service import radar_chart
 
 
 def select_option(options, label):
-    """
-    Display numbered options and return the selected value.
-    """
 
     print(f"\nAvailable {label}:\n")
 
@@ -50,13 +47,18 @@ def main_menu(df):
 
             print("\nVehicle search\n")
 
+            price_min = df["vehicle_price_eur"].min()
+            price_max = df["vehicle_price_eur"].max()
+
+            print(f"Vehicles available: {len(df)}")
+            print(f"Price range: {price_min:.0f}€ – {price_max:.0f}€\n")
+
             try:
                 budget = float(input("Maximum budget (€): "))
             except ValueError:
                 print("Invalid budget")
                 continue
 
-            # récupérer valeurs uniques
             energy_options = sorted(df["energy"].unique())
             body_options = sorted(df["body_type"].unique())
 
@@ -85,13 +87,13 @@ def main_menu(df):
                 w_power,
             )
 
+            print(f"\nVehicles found: {len(results)}\n")
+
             if results.empty:
 
-                print("\nNo vehicles match your criteria")
+                print("No vehicles match your criteria")
 
             else:
-
-                print("\nTop recommended vehicles\n")
 
                 display_columns = [
                     "brand",
@@ -107,7 +109,6 @@ def main_menu(df):
 
                 print(results[display_columns])
 
-                # option graphique radar
                 show_chart = input("\nShow radar comparison chart? (y/n): ")
 
                 if show_chart.lower() == "y":
