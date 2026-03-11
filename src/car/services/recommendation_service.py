@@ -14,13 +14,8 @@ def recommend_vehicle(
     w_consumption=0.2,
     w_power=0.1,
 ):
-    """
-    Recommend vehicles using the TOPSIS multi-criteria decision method.
-    """
 
     filtered = df.copy()
-
-    # --- filtres ---
 
     if budget is not None:
         filtered = filter_by_budget(filtered, budget)
@@ -34,8 +29,6 @@ def recommend_vehicle(
     if filtered.empty:
         return filtered
 
-    # --- matrice des critères ---
-
     criteria = filtered[
         [
             "vehicle_price_eur",
@@ -45,26 +38,24 @@ def recommend_vehicle(
         ]
     ].to_numpy()
 
-    # --- normalisation vectorielle ---
-
-    norm = criteria / np.sqrt((criteria**2).sum(axis=0))
-
-    # --- poids ---
+    denom = np.sqrt((criteria**2).sum(axis=0))
+    denom[denom == 0] = 1
+    norm = criteria / denom
 
     weights = np.array([w_price, w_co2, w_consumption, w_power])
 
-    # normalisation des poids
-    weights = weights / weights.sum()
+    if weights.sum() == 0:
+        weights = np.ones_like(weights) / len(weights)
+    else:
+        weights = weights / weights.sum()
 
     weighted = norm * weights
 
-    # --- solution idéale et anti-idéale ---
-
     ideal = np.array([
-        weighted[:, 0].min(),  # prix
-        weighted[:, 1].min(),  # CO2
-        weighted[:, 2].min(),  # consommation
-        weighted[:, 3].max(),  # puissance
+        weighted[:, 0].min(),
+        weighted[:, 1].min(),
+        weighted[:, 2].min(),
+        weighted[:, 3].max(),
     ])
 
     anti_ideal = np.array([
@@ -74,18 +65,15 @@ def recommend_vehicle(
         weighted[:, 3].min(),
     ])
 
-    # --- distances ---
-
     dist_ideal = np.sqrt(((weighted - ideal) ** 2).sum(axis=1))
     dist_anti = np.sqrt(((weighted - anti_ideal) ** 2).sum(axis=1))
 
-    # --- score TOPSIS ---
+    denom_score = dist_ideal + dist_anti
+    denom_score[denom_score == 0] = 1
 
-    score = dist_anti / (dist_ideal + dist_anti)
+    score = dist_anti / denom_score
 
     filtered = filtered.copy()
     filtered["score"] = score
-
-    # --- classement final ---
 
     return filtered.sort_values("score", ascending=False).head(10)

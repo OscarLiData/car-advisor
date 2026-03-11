@@ -2,13 +2,14 @@ FROM python:3.14
 
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock /app/
+RUN pip install --no-cache-dir poetry
 
-RUN pip install poetry
+COPY pyproject.toml poetry.lock ./
+
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-root
 
-COPY . /app
+COPY . .
 
 ENV PYTHONPATH=/app/src
 
