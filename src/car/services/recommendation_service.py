@@ -47,14 +47,19 @@ def recommend_vehicle(
 
     # --- normalisation vectorielle ---
 
-    norm = criteria / np.sqrt((criteria**2).sum(axis=0))
+    denominator = np.sqrt((criteria**2).sum(axis=0))
 
+    # éviter division par zéro
+    denominator[denominator == 0] = 1
+
+    norm = criteria / denominator
     # --- poids ---
-
     weights = np.array([w_price, w_co2, w_consumption, w_power])
 
-    # normalisation des poids
-    weights = weights / weights.sum()
+    if weights.sum() == 0:
+        weights = np.ones_like(weights) / len(weights)
+    else:
+        weights = weights / weights.sum()
 
     weighted = norm * weights
 
