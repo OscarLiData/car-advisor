@@ -1,8 +1,7 @@
 import pandas as pd
 from pathlib import Path
 
-
-DATA_PATH = Path("data/processed/cars_clean.csv")
+DATA_PATH = Path("data/raw/ademe-car-labelling.csv")
 
 
 def load_dataset():
