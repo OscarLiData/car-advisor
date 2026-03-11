@@ -17,18 +17,41 @@ def recommend_vehicle(
 
     filtered = df.copy()
 
+
+    print("Initial vehicles:", len(filtered))
+
     if budget is not None:
         filtered = filter_by_budget(filtered, budget)
+        print("After budget filter:", len(filtered))
 
     if energy:
         filtered = filter_by_energy(filtered, energy)
+        print("After energy filter:", len(filtered))
 
     if body:
         filtered = filter_by_body(filtered, body)
+        print("After body filter:", len(filtered))
+
+    
+    filtered["fuel_consumption_l_100km"] = filtered[
+    "fuel_consumption_l_100km"].fillna(0)
+
+    # suppression des lignes avec valeurs manquantes
+    filtered = filtered.dropna(
+        subset=[
+            "vehicle_price_eur",
+            "co2_mixed_g_km",
+            "fuel_consumption_l_100km",
+            "max_power_kw",
+        ]
+    )
+
+    print("After removing missing values:", len(filtered))
 
     if filtered.empty:
         return filtered
 
+    # matrice des critères
     criteria = filtered[
         [
             "vehicle_price_eur",
@@ -36,13 +59,15 @@ def recommend_vehicle(
             "fuel_consumption_l_100km",
             "max_power_kw",
         ]
-    ].to_numpy()
+    ].to_numpy(dtype=float)
 
+    # normalisation vectorielle (TOPSIS)
     denom = np.sqrt((criteria**2).sum(axis=0))
     denom[denom == 0] = 1
     norm = criteria / denom
 
-    weights = np.array([w_price, w_co2, w_consumption, w_power])
+    # poids
+    weights = np.array([w_price, w_co2, w_consumption, w_power], dtype=float)
 
     if weights.sum() == 0:
         weights = np.ones_like(weights) / len(weights)
@@ -51,6 +76,9 @@ def recommend_vehicle(
 
     weighted = norm * weights
 
+    # critères coût / bénéfice
+    # coût : prix, co2, consommation
+    # bénéfice : puissance
     ideal = np.array([
         weighted[:, 0].min(),
         weighted[:, 1].min(),
@@ -65,6 +93,7 @@ def recommend_vehicle(
         weighted[:, 3].min(),
     ])
 
+    # distances
     dist_ideal = np.sqrt(((weighted - ideal) ** 2).sum(axis=1))
     dist_anti = np.sqrt(((weighted - anti_ideal) ** 2).sum(axis=1))
 
