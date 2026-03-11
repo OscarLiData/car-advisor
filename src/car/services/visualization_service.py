@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 
 def radar_chart(df):
 
-    # critères
     features = [
         "vehicle_price_eur",
         "co2_mixed_g_km",
@@ -14,7 +13,9 @@ def radar_chart(df):
 
     labels = ["Price", "CO2", "Consumption", "Power"]
 
-    # normalisation
+    if df.empty:
+        raise ValueError("Dataframe is empty")
+
     data = df[features]
     data = data / data.max()
 
@@ -36,4 +37,4 @@ def radar_chart(df):
     plt.legend(loc="upper right")
     plt.title("Vehicle comparison radar")
 
-    plt.show()
+    return fig

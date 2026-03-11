@@ -34,7 +34,7 @@ def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
         "eco_bonus_malus_eur",
     ]
 
-    df = df[columns]
+    df = df[[c for c in columns if c in df.columns]]
 
     numeric_cols = [
         "fuel_consumption_l_100km",
@@ -43,21 +43,33 @@ def clean_dataset(df: pd.DataFrame) -> pd.DataFrame:
         "vehicle_weight_kg",
     ]
 
-    df[numeric_cols] = df[numeric_cols].fillna(0)
+    existing_numeric = [c for c in numeric_cols if c in df.columns]
+
+    if existing_numeric:
+        df[existing_numeric] = df[existing_numeric].fillna(0)
+
+    # supprimer les lignes avec brand manquant
+    if "brand" in df.columns:
+        df = df.dropna(subset=["brand"])
 
     # ratio puissance / poids
-    df["power_weight_ratio"] = (
-        df["max_power_kw"] /
-        df["vehicle_weight_kg"].replace(0, pd.NA)
-    )
+    if {"max_power_kw", "vehicle_weight_kg"}.issubset(df.columns):
+        df["power_weight_ratio"] = (
+            df["max_power_kw"] /
+            df["vehicle_weight_kg"].replace(0, pd.NA)
+        )
 
-    df["brand"] = df["brand"].str.upper()
-    df["energy"] = df["energy"].str.lower()
-    df["body_type"] = df["body_type"].str.lower()
+    if "brand" in df.columns:
+        df["brand"] = df["brand"].str.upper()
+
+    if "energy" in df.columns:
+        df["energy"] = df["energy"].str.lower()
+
+    if "body_type" in df.columns:
+        df["body_type"] = df["body_type"].str.lower()
 
     df = df.reset_index(drop=True)
 
-    # sauvegarde
     CLEAN_PATH.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(CLEAN_PATH, index=False)
 

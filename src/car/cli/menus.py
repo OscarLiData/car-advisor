@@ -26,16 +26,23 @@ def select_option(df, column, options, label):
             print("Please enter a number")
 
 
-def main_menu(df):
+def main_menu():
+
+    print("\nSmart Vehicle Decision Analytics")
+    print("1 - View global statistics")
+    print("2 - Find a vehicle")
+    print("3 - Exit")
+
+    choice = input("Select an option: ")
+
+    return choice
+
+
+def run_cli(df):
 
     while True:
 
-        print("\nSmart Vehicle Decision Analytics")
-        print("1 - View global statistics")
-        print("2 - Find a vehicle")
-        print("3 - Exit")
-
-        choice = input("Select an option: ")
+        choice = main_menu()
 
         if choice == "1":
 
