@@ -3,15 +3,15 @@ from car.services.recommendation_service import recommend_vehicle
 from car.services.visualization_service import radar_chart
 
 
-def select_option(options, label):
-    """
-    Display numbered options and return the selected value.
-    """
+def select_option(df, column, options, label):
 
     print(f"\nAvailable {label}:\n")
 
     for i, option in enumerate(options, start=1):
-        print(f"{i} - {option}")
+
+        count = len(df[df[column] == option])
+
+        print(f"{i} - {option} ({count} vehicles)")
 
     while True:
         try:
@@ -50,18 +50,47 @@ def main_menu(df):
 
             print("\nVehicle search\n")
 
+            price_min = df["vehicle_price_eur"].min()
+            price_max = df["vehicle_price_eur"].max()
+
+            print(f"Vehicles available: {len(df)}")
+            print(f"Price range: {price_min:.0f}€ – {price_max:.0f}€\n")
+
             try:
                 budget = float(input("Maximum budget (€): "))
             except ValueError:
                 print("Invalid budget")
                 continue
 
-            # récupérer valeurs uniques
-            energy_options = sorted(df["energy"].unique())
-            body_options = sorted(df["body_type"].unique())
+            # -------- FILTRE BUDGET --------
 
-            energy = select_option(energy_options, "energy types")
-            body = select_option(body_options, "body types")
+            filtered_df = df[df["vehicle_price_eur"] <= budget]
+
+            print(f"\nVehicles within budget: {len(filtered_df)}")
+
+            if filtered_df.empty:
+                print("No vehicles available with this budget")
+                continue
+
+            # -------- FILTRE ENERGY --------
+
+            energy_options = sorted(filtered_df["energy"].unique())
+
+            energy = select_option(filtered_df, "energy", energy_options, "energy types")
+
+            filtered_df = filtered_df[filtered_df["energy"] == energy]
+
+            print(f"\nVehicles after energy filter: {len(filtered_df)}")
+
+            if filtered_df.empty:
+                print("No vehicles available with this energy type")
+                continue
+
+            # -------- FILTRE BODY --------
+
+            body_options = sorted(filtered_df["body_type"].unique())
+
+            body = select_option(filtered_df, "body_type", body_options, "body types")
 
             print("\nImportance of criteria (0 → not important, 1 → very important)\n")
 
@@ -74,6 +103,8 @@ def main_menu(df):
                 print("Invalid weight value")
                 continue
 
+            # -------- RECOMMANDATION --------
+
             results = recommend_vehicle(
                 df,
                 budget,
@@ -85,13 +116,13 @@ def main_menu(df):
                 w_power,
             )
 
+            print(f"\nVehicles found: {len(results)}\n")
+
             if results.empty:
 
-                print("\nNo vehicles match your criteria")
+                print("No vehicles match your criteria")
 
             else:
-
-                print("\nTop recommended vehicles\n")
 
                 display_columns = [
                     "brand",
@@ -107,7 +138,6 @@ def main_menu(df):
 
                 print(results[display_columns])
 
-                # option graphique radar
                 show_chart = input("\nShow radar comparison chart? (y/n): ")
 
                 if show_chart.lower() == "y":
