@@ -62,12 +62,35 @@ def main_menu(df):
                 print("Invalid budget")
                 continue
 
-            energy_options = sorted(df["energy"].unique())
-            body_options = sorted(df["body_type"].unique())
+            # -------- FILTRE BUDGET --------
 
-            energy = select_option(df, "energy", energy_options, "energy types")
+            filtered_df = df[df["vehicle_price_eur"] <= budget]
 
-            body = select_option(df, "body_type", body_options, "body types")
+            print(f"\nVehicles within budget: {len(filtered_df)}")
+
+            if filtered_df.empty:
+                print("No vehicles available with this budget")
+                continue
+
+            # -------- FILTRE ENERGY --------
+
+            energy_options = sorted(filtered_df["energy"].unique())
+
+            energy = select_option(filtered_df, "energy", energy_options, "energy types")
+
+            filtered_df = filtered_df[filtered_df["energy"] == energy]
+
+            print(f"\nVehicles after energy filter: {len(filtered_df)}")
+
+            if filtered_df.empty:
+                print("No vehicles available with this energy type")
+                continue
+
+            # -------- FILTRE BODY --------
+
+            body_options = sorted(filtered_df["body_type"].unique())
+
+            body = select_option(filtered_df, "body_type", body_options, "body types")
 
             print("\nImportance of criteria (0 → not important, 1 → very important)\n")
 
@@ -79,6 +102,8 @@ def main_menu(df):
             except ValueError:
                 print("Invalid weight value")
                 continue
+
+            # -------- RECOMMANDATION --------
 
             results = recommend_vehicle(
                 df,
