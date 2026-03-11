@@ -66,8 +66,14 @@ def recommend_vehicle(
     denom[denom == 0] = 1
     norm = criteria / denom
 
-    # poids
-    weights = np.array([w_price, w_co2, w_consumption, w_power], dtype=float)
+    denominator = np.sqrt((criteria**2).sum(axis=0))
+
+    # éviter division par zéro
+    denominator[denominator == 0] = 1
+
+    norm = criteria / denominator
+    # --- poids ---
+    weights = np.array([w_price, w_co2, w_consumption, w_power])
 
     if weights.sum() == 0:
         weights = np.ones_like(weights) / len(weights)
