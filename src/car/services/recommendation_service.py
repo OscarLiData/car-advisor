@@ -14,23 +14,34 @@ def recommend_vehicle(
     w_consumption=0.2,
     w_power=0.1,
 ):
-    """
-    Recommend vehicles using TOPSIS multi-criteria decision method.
-    """
 
     filtered = df.copy()
 
-    # filtres
+    print("\nTotal vehicles in dataset:", len(filtered))
+
+    # filtre budget
     if budget is not None:
         filtered = filter_by_budget(filtered, budget)
+        print("Vehicles after budget filter:", len(filtered))
 
+    # filtre énergie
     if energy:
-        filtered = filter_by_energy(filtered, energy)
+        print("\nEnergy requested:", energy)
+        print("Available energies:", df["energy"].unique())
 
+        filtered = filter_by_energy(filtered, energy)
+        print("Vehicles after energy filter:", len(filtered))
+
+    # filtre carrosserie
     if body:
+        print("\nBody requested:", body)
+        print("Available body types:", df["body_type"].unique())
+
         filtered = filter_by_body(filtered, body)
+        print("Vehicles after body filter:", len(filtered))
 
     if filtered.empty:
+        print("\nNo vehicles remaining after filters.")
         return filtered
 
     # matrice des critères
@@ -43,22 +54,18 @@ def recommend_vehicle(
         ]
     ].to_numpy()
 
-    # normalisation
     norm = criteria / np.sqrt((criteria**2).sum(axis=0))
 
-    # pondération
     weights = np.array([w_price, w_co2, w_consumption, w_power])
     weighted = norm * weights
 
-    # solution idéale
     ideal = np.array([
-        weighted[:, 0].min(),  # prix
-        weighted[:, 1].min(),  # CO2
-        weighted[:, 2].min(),  # conso
-        weighted[:, 3].max(),  # puissance
+        weighted[:, 0].min(),
+        weighted[:, 1].min(),
+        weighted[:, 2].min(),
+        weighted[:, 3].max(),
     ])
 
-    # solution anti-idéale
     anti_ideal = np.array([
         weighted[:, 0].max(),
         weighted[:, 1].max(),
@@ -66,11 +73,9 @@ def recommend_vehicle(
         weighted[:, 3].min(),
     ])
 
-    # distances
     dist_ideal = np.sqrt(((weighted - ideal) ** 2).sum(axis=1))
     dist_anti = np.sqrt(((weighted - anti_ideal) ** 2).sum(axis=1))
 
-    # score TOPSIS
     score = dist_anti / (dist_ideal + dist_anti)
 
     filtered = filtered.copy()
