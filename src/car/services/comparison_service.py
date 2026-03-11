@@ -118,116 +118,32 @@ def ask_main_menu_choice() -> str:
     print("0 - Quit")
 
     while True:
-<<<<<<< HEAD
         choice = input("Your choice: ").strip()
         if choice in {"0", "1", "2", "3"}:
             return choice
         print("Invalid choice, please enter 0, 1, 2 or 3.")
 
 
-def ask_continue_choice() -> str:
-    """Ask the user what to do after a comparison or listing."""
-    print("\nWhat do you want to do next?")
-=======
+
 def ask_continue_choice() -> str:
     """Ask the user what to do after a comparison or listing."""
     print("\nWhat do you want to do next?")
     print("1 - New comparison / listing")
     print("2 - Back to main menu")
->>>>>>> ac12e2b (update)
+
     print("1 - Back to main menu")
     print("0 - Quit")
 
     while True:
         choice = input("Your choice: ").strip()
-<<<<<<< HEAD
-        if choice in {"0", "1"}:
-            return choice
-=======
         if choice in {"0", "1", "2"}:
         if choice in {"0", "1"}:
             return choice
         print("Invalid choice, please enter 0, 1 or 2.")
->>>>>>> ac12e2b (update)
         print("Invalid choice, please enter 0 or 1.")
 
 
 def filter_cars_by_brand(cars: list[Car], brand: str) -> list[Car]:
-<<<<<<< HEAD
-    """Return a list of cars matching the selected brand."""
-    return [car for car in cars if car.brand == brand]
-
-
-def compute_statistics(cars: list[Car]) -> dict:
-    """Compute statistics for a set of cars."""
-    prices = [car.price for car in cars]
-    fuel = [car.fuel_consumption for car in cars]
-    co2_values = [car.co2 for car in cars]
-    power = [car.power_kw for car in cars]
-    weight = [car.weight_kg for car in cars]
-
-    return {
-        "count": len(cars),
-        "avg_price": mean(prices),
-        "avg_fuel": mean(fuel),
-        "avg_co2": mean(co2_values),
-        "avg_power": mean(power),
-        "avg_weight": mean(weight),
-    }
-
-
-def display_single_result(brand: str, stats: dict) -> None:
-    """Display comparison results for one brand."""
-    print("\n=== Comparison results ===")
-    print(f"Brand: {brand}")
-    print(f"Number of models: {stats['count']}")
-    print(f"Average price: {stats['avg_price']:.0f} €")
-    print(f"Average fuel consumption: {stats['avg_fuel']:.2f} L/100km")
-    print(f"Average CO2 emissions: {stats['avg_co2']:.2f} g/km")
-    print(f"Average engine power: {stats['avg_power']:.1f} kW")
-    print(f"Average vehicle weight: {stats['avg_weight']:.0f} kg")
-    print("==========================\n")
-
-
-def display_two_results(
-    brand1: str,
-    stats1: dict,
-    brand2: str,
-    stats2: dict,
-) -> None:
-    """Display comparison results for two brands."""
-    print("\n=== Comparison results (two brands) ===")
-    header = f"{'Metric':30} | {brand1:15} | {brand2:15}"
-    print(header)
-    print("-" * len(header))
-
-    def line(label: str, value1: str, value2: str) -> None:
-        print(f"{label:30} | {value1:15} | {value2:15}")
-
-    line("Number of models",
-         str(stats1["count"]),
-         str(stats2["count"]))
-    line("Average price (€)",
-         f"{stats1['avg_price']:.0f}",
-         f"{stats2['avg_price']:.0f}")
-    line("Avg fuel (L/100km)",
-         f"{stats1['avg_fuel']:.2f}",
-         f"{stats2['avg_fuel']:.2f}")
-    line("Avg CO2 (g/km)",
-         f"{stats1['avg_co2']:.2f}",
-         f"{stats2['avg_co2']:.2f}")
-    line("Avg power (kW)",
-         f"{stats1['avg_power']:.1f}",
-         f"{stats2['avg_power']:.1f}")
-    line("Avg weight (kg)",
-         f"{stats1['avg_weight']:.0f}",
-         f"{stats2['avg_weight']:.0f}")
-
-    print("=" * len(header))
-    print()
-
-
-=======
     print()
 
 
@@ -239,7 +155,6 @@ def display_all_vehicles(cars: list[Car]) -> None:
         f"{'Energy':10} | {'Price (€)':10} | {'CO2':6} | "
         f"{'Fuel (L/100km)':14} | {'Power (kW)':11} | {'Weight (kg)':11}"
     )
->>>>>>> ac12e2b (update)
 def display_brand_list_with_counts(cars: list[Car]) -> None:
     """Display each brand once with the number of distinct models."""
     brand_to_models: dict[str, set[str]] = defaultdict(set)
@@ -252,8 +167,6 @@ def display_brand_list_with_counts(cars: list[Car]) -> None:
     print(header)
     print("-" * len(header))
 
-<<<<<<< HEAD
-=======
     for car in cars:
         print(
             f"{car.brand:10} | "
@@ -266,14 +179,12 @@ def display_brand_list_with_counts(cars: list[Car]) -> None:
             f"{car.power_kw:11.1f} | "
             f"{car.weight_kg:11.0f}"
         )
->>>>>>> ac12e2b (update)
     for brand in sorted(brand_to_models.keys()):
         model_count = len(brand_to_models[brand])
         print(f"{brand:20} | {model_count:16}")
 
     print("=" * len(header))
     print()
-<<<<<<< HEAD
 
 
 def main() -> None:
@@ -293,19 +204,16 @@ def main() -> None:
             return
 
         if menu_choice == "1":
-=======
             return
 
         if menu_choice == "1":
             # List all vehicles.
             display_all_vehicles(cars)
->>>>>>> ac12e2b (update)
             # List brands with number of models.
             display_brand_list_with_counts(cars)
 
         if menu_choice == "2":
             # Compare one brand.
-<<<<<<< HEAD
             brand = fuzzy_choose_brand(brands, label="brand 1")
             if not brand:
                 print("Operation cancelled.")
@@ -349,7 +257,6 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-=======
             print("Goodbye!")
             return
         if next_choice == "1":
@@ -359,4 +266,3 @@ if __name__ == "__main__":
             # Back to main menu: just continue, the loop will restart.
             continue
 
->>>>>>> ac12e2b (update)
