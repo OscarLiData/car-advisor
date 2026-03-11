@@ -24,7 +24,7 @@ class Vehicule:
     weight_kg: float
 
 
-def compare_vehicules(vehicules) -> dict:
+def compare_cars(vehicules) -> dict:
     """Return basic statistics for a list of vehicles."""
 
     if not vehicules:
@@ -42,7 +42,7 @@ def compare_vehicules(vehicules) -> dict:
     }
 
 
-def load_vehicules(data_file: Path) -> list[Vehicule]:
+def load_cars(data_file: Path) -> list[Vehicule]:
 
     vehicules = []
 
@@ -139,7 +139,7 @@ def ask_continue_choice() -> str:
         print("Invalid choice.")
 
 
-def filter_vehicules_by_brand(vehicules: list[Vehicule], brand: str) -> list[Vehicule]:
+def filter_cars_by_brand(vehicules: list[Vehicule], brand: str) -> list[Vehicule]:
     return [v for v in vehicules if v.brand == brand]
 
 
