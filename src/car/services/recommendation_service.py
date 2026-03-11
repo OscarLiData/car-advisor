@@ -58,12 +58,13 @@ def recommend_vehicle(
 
     weighted = norm * weights
 
+    # --- solution idéale et anti-idéale ---
 
     ideal = np.array([
         weighted[:, 0].min(),  # prix
         weighted[:, 1].min(),  # CO2
         weighted[:, 2].min(),  # consommation
-        weighted[:, 3].max(),  
+        weighted[:, 3].max(),  # puissance
     ])
 
     anti_ideal = np.array([
